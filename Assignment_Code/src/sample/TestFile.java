@@ -1,17 +1,22 @@
 package sample;
 
 import java.text.DecimalFormat;
+
+// From the Assignment 1 PDF
 public class TestFile {
+    // Class Variables
     private String filename;
     private double spamProbability;
     private String actualClass;
 
+    // Constructor Method
     public TestFile(String filename, double spamProbability, String actualClass) {
         this.filename = filename;
         this.spamProbability = spamProbability;
         this.actualClass = actualClass;
     }
 
+    // Member Functions
     public String getFilename(){ return this.filename; }
     public double getSpamProbability(){ return this.spamProbability; }
     public String getSpamProbRounded(){
