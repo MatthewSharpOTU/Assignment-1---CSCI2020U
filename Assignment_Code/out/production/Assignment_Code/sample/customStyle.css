@@ -1,9 +1,12 @@
-.text{
-    -fx-text-fill: Black;
+.title{
     -fx-font-size: 20px;
 }
 
 .label{
-    -fx-text-fill: Black;
+    -fx-text-fill: black;
     -fx-font-size: 12px;
+}
+
+.background{
+    -fx-background-color: white;
 }
