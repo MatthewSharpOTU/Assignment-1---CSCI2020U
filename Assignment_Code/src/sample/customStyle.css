@@ -1,0 +1,9 @@
+.title{
+    -fx-text-fill: Black;
+    -fx-font-size: 20px;
+}
+
+.label{
+    -fx-text-fill: Black;
+    -fx-font-size: 12px;
+}
