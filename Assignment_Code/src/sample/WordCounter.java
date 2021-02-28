@@ -7,10 +7,12 @@ import java.util.*;
 public class WordCounter{
 
     private Map<String, Integer> wordCounts; // Stores frequency of a specific word
+    private Map<String, Boolean> wordsAppeared; // Stores words already appeared in a file
 
     // Creates variable to count word frequency
     public WordCounter() {
         wordCounts = new TreeMap<>();
+        wordsAppeared = new TreeMap<>();
     }
 
     public void parseFile(File file) throws IOException{
@@ -31,11 +33,16 @@ public class WordCounter{
                     countWord(token);
                 }
             }
+            wordsAppeared = new TreeMap<>();
         }
     }
 
     // Boolean function to determine if the word is valid
     private boolean isValidWord(String word){
+        if (wordsAppeared.containsKey(word)) {
+           return false;
+        }
+        wordsAppeared.put(word, true);
         String allLetters = "^[a-zA-Z]+$";
         // Returns true if the word is composed by only letters otherwise returns false
         return word.matches(allLetters);
