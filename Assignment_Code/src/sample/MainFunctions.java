@@ -32,13 +32,17 @@ public class MainFunctions {
         directoryChooser.setInitialDirectory(new File("."));
         File mainDirectory = directoryChooser.showDialog(primaryStage);
 
+        File trainDirectory = new File("./assignment1_data/data/train");
+
         if (mainDirectory==null){return false;} //Returns failed attempt when no directory
 
         // Parses through file and detects all words
         WordCounter wordCounter = new WordCounter(); // Creates an instance of WordCounter Class
+        WordCounter trainCounter = new WordCounter();
         try{
-            wordCounter.parseFile(mainDirectory); // Parses through the directory files
-            wordCounter.outputWordCount(1, new File("output.txt")); // Outputs all single words into a txt file
+            wordCounter.parseFile(mainDirectory); // Parses through the choosen directory files
+            trainCounter.parseFile(trainDirectory); // Parses through train directory files
+            trainCounter.outputWordCount(1, new File("output.txt")); // Outputs all single words into a txt file
         }catch(FileNotFoundException e){
             System.err.println("Invalid input dir: " + mainDirectory.getAbsolutePath()); // catch block if error for incorrect input director
             e.printStackTrace();
