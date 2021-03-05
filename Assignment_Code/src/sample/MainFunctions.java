@@ -37,11 +37,15 @@ public class MainFunctions {
         if (mainDirectory==null){return false;} //Returns failed attempt when no directory
 
         // Parses through file and detects all words
-        WordCounter wordCounter = new WordCounter(); // Creates an instance of WordCounter Class
+        WordCounter testCounter = new WordCounter(); // Creates an instance of WordCounter Class
         WordCounter trainCounter = new WordCounter();
+        percentageCalculator trainPercentages = new percentageCalculator();
+        percentageCalculator testPercentages = new percentageCalculator();
         try{
-            wordCounter.parseFile(mainDirectory); // Parses through the choosen directory files
             trainCounter.parseFile(trainDirectory); // Parses through train directory files
+            trainPercentages.setPercentages(trainCounter);
+            testCounter.parseFile(mainDirectory); // Parses through the chosen directory files
+            testPercentages.setPercentages(testCounter);
             trainCounter.outputWordCount(1, new File("output.txt")); // Outputs all single words into a txt file
         }catch(FileNotFoundException e){
             System.err.println("Invalid input dir: " + mainDirectory.getAbsolutePath()); // catch block if error for incorrect input director
