@@ -55,21 +55,6 @@ public class WordCounter{
             Scanner scanner = new Scanner(test);
             //Scans token by token
             if (test.getParentFile().getName().equals("spam")){
-                //System.out.println(file.getName());
-                double total = 0.0;
-                while (scanner.hasNext()) {
-                    String token = scanner.next();
-                    if (isValidWord(token)) {
-                        total += calculatePercentage(token);
-                    }
-                    wordsAppeared = new TreeMap<>();
-                }
-                double spamChance = 1/(1+Math.pow(Math.E, total));
-                //System.out.println(spamChance);
-                totalPercentages.add(new TestFile(test.getName(), total, test.getParentFile().getName()));
-            }
-            else if (test.getParentFile().getName().equals("ham") || test.getParentFile().getName().equals("ham2")){
-                //System.out.println(file.getName());
                 double total = 0.0;
                 while (scanner.hasNext()) {
                     String token = scanner.next();
@@ -80,7 +65,20 @@ public class WordCounter{
                 }
                 double spamChance = 1/(1+Math.pow(Math.E, total));
                 System.out.println(spamChance);
-                totalPercentages.add(new TestFile(test.getName(), total, test.getParentFile().getName()));
+                totalPercentages.add(new TestFile(test.getName(), spamChance, test.getParentFile().getName()));
+            }
+            else if (test.getParentFile().getName().equals("ham") || test.getParentFile().getName().equals("ham2")){
+                double total = 0.0;
+                while (scanner.hasNext()) {
+                    String token = scanner.next();
+                    if (isValidWord(token)) {
+                        total += calculatePercentage(token);
+                    }
+                    wordsAppeared = new TreeMap<>();
+                }
+                double spamChance = 1/(1+Math.pow(Math.E, total));
+                System.out.println(spamChance);
+                totalPercentages.add(new TestFile(test.getName(), spamChance, test.getParentFile().getName()));
             }
         }
     }
@@ -88,23 +86,18 @@ public class WordCounter{
     public double calculatePercentage(String word){
         double hamPercent = 0.00000;
         double spamPercent = 0.00000;
-        DecimalFormat df = new DecimalFormat("#0.00000");
         if (wordCountsHam.containsKey(word)){
             hamPercent = wordCountsHam.get(word)/hamCount;
         } else {
-            System.out.println("Ham is null");
             hamPercent = 1/hamCount;
         }
         if (wordCountsSpam.containsKey(word)){
             spamPercent = wordCountsSpam.get(word)/spamCount;
         }
         else {
-            System.out.println("Spam is null");
             spamPercent = 1/spamCount;
         }
         double spamEquation = spamPercent/(spamPercent + hamPercent);
-        System.out.println(wordCountsSpam.get(word) + " " + spamPercent);
-        System.out.println(wordCountsHam.get(word) + " " + hamPercent);
         return Math.log(1-spamEquation)-Math.log(spamEquation);
     }
 
