@@ -14,7 +14,7 @@ public class WordCounter{
     public ArrayList<TestFile> totalPercentages;
     public ArrayList<Double> hamPercentages;
     public TestFile[] spamPercentages;
-    public int fileCounts;
+    public double fileCounts;
     public double hamCount;
     public double spamCount;
     public int count;
@@ -25,7 +25,7 @@ public class WordCounter{
         wordsAppeared = new TreeMap<>();
         allWords = new TreeMap<>();
         wordCountsSpam = new TreeMap<>();
-        fileCounts = 0; // Used to store the count of all files
+        fileCounts = 0.0; // Used to store the count of all files
         hamCount = 0.0; // Used to store the count of ham files
         spamCount = 0.0; // used to store the count of spam files
         count = 0;
@@ -34,13 +34,14 @@ public class WordCounter{
         spamPercentages = new TestFile[5000];
     }
 
-    public int getFileCounts() { return fileCounts; }
+    public double getFileCounts() { return fileCounts; }
     public double getHamCount() { return hamCount; }
     public double getSpamCount() { return spamCount; }
     public Map<String, Double> getWordCountsHam() { return wordCountsHam; }
     public Map<String, Double> getWordCountsSpam() { return wordCountsSpam; }
     public Map<String, Boolean> getWordsAppeared() { return wordsAppeared; }
     public Map<Integer, String> getAllWords() { return allWords; }
+    public ArrayList<TestFile> getTotalPercentages() { return totalPercentages; }
 
     public void parseTestFile(File test) throws FileNotFoundException {
         System.out.println("Starting parsing of the file:" + test.getAbsolutePath());
@@ -64,7 +65,6 @@ public class WordCounter{
                     wordsAppeared = new TreeMap<>();
                 }
                 double spamChance = 1/(1+Math.pow(Math.E, total));
-                System.out.println(spamChance);
                 totalPercentages.add(new TestFile(test.getName(), spamChance, test.getParentFile().getName()));
             }
             else if (test.getParentFile().getName().equals("ham") || test.getParentFile().getName().equals("ham2")){
@@ -77,9 +77,9 @@ public class WordCounter{
                     wordsAppeared = new TreeMap<>();
                 }
                 double spamChance = 1/(1+Math.pow(Math.E, total));
-                System.out.println(spamChance);
                 totalPercentages.add(new TestFile(test.getName(), spamChance, test.getParentFile().getName()));
             }
+            fileCounts++;
         }
     }
 
@@ -134,7 +134,6 @@ public class WordCounter{
                     }
                 }
             }
-            fileCounts++;
             wordsAppeared = new TreeMap<>();
         }
     }

@@ -21,10 +21,14 @@ import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
 public class MainFunctions {
+    private static WordCounter trainCounter;
+
     // method used for accessing files
     public static boolean processFiles(Window primaryStage){
         // User Selects Directory
@@ -37,8 +41,7 @@ public class MainFunctions {
         if (mainDirectory==null){return false;} //Returns failed attempt when no directory
 
         // Parses through file and detects all words
-        WordCounter testCounter = new WordCounter(); // Creates an instance of WordCounter Class
-        WordCounter trainCounter = new WordCounter();
+        trainCounter = new WordCounter(); // Creates an instance of WordCounter Class
 
         try{
             trainCounter.parseFile(trainDirectory); // Parses through train directory files
@@ -60,6 +63,27 @@ public class MainFunctions {
 
     // method used for displaying data
     public static void displayData(Stage primaryStage){
+        ArrayList<TestFile> testPercentages = trainCounter.getTotalPercentages();
+        double truePositives = 0.0;
+        double trueNegatives = 0.0;
+        double falsePositives = 0.0;
+        for (TestFile file: testPercentages){
+            if (file.getActualClass().equals("ham") && file.getSpamProbRounded().equals("0.00000")){
+                trueNegatives++;
+            }
+            else if (file.getActualClass().equals("ham") && !file.getSpamProbRounded().equals("0.00000")){
+                falsePositives++;
+            }
+            else if (file.getActualClass().equals("spam") && !file.getSpamProbRounded().equals("0.00000")){
+                truePositives++;
+            }
+            //System.out.println(file.getFilename() + file.getActualClass() + file.getSpamProbRounded());
+        }
+        System.out.println(trueNegatives + " " + truePositives + " " + falsePositives);
+        double accuracy = (truePositives+trueNegatives)/trainCounter.getFileCounts();
+        double precision = truePositives/(falsePositives+truePositives);
+        DecimalFormat df = new DecimalFormat("0.00000");
+
         // initialize new data table
         BorderPane mainPane = new BorderPane();
         ScrollPane scrollPane = new ScrollPane();
@@ -67,9 +91,9 @@ public class MainFunctions {
         GridPane calculatedData = new GridPane();
         Label accuracyText = new Label("Accuracy: ");
         Label precisionText = new Label("Precision: ");
-        TextField accuracyData = new TextField("420");
+        TextField accuracyData = new TextField(df.format(accuracy));
         accuracyData.setDisable(true);
-        TextField precisionData = new TextField("testing");
+        TextField precisionData = new TextField(df.format(precision));
         precisionData.setDisable(true);
 
         // Construct new data table
