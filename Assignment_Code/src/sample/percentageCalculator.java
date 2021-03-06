@@ -12,7 +12,7 @@ public class percentageCalculator {
     }
 
 
-    public void setPercentages(WordCounter trainCounter) {
+    public void setPercentages(WordCounter trainCounter, WordCounter testCounter) {
         System.out.println("File Count " + trainCounter.getFileCounts());
         int count = 0;
         System.out.println(trainCounter.getWordCountsHam().size());

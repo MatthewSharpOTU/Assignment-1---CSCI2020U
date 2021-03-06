@@ -1,18 +1,22 @@
 package sample;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 
 // WordCounter Class will count all words in a file - based off of lecture code
 public class WordCounter{
 
-    private Map<String, Integer> wordCountsHam; // Stores frequency of a specific word in Ham file
-    private Map<String, Integer> wordCountsSpam; // Stores frequency of a specific word in Spam file
+    private Map<String, Double> wordCountsHam; // Stores frequency of a specific word in Ham file
+    private Map<String, Double> wordCountsSpam; // Stores frequency of a specific word in Spam file
     private Map<String, Boolean> wordsAppeared; // Stores words already appeared in a file
     private Map<Integer, String> allWords; // Used to store all words
+    public ArrayList<TestFile> totalPercentages;
+    public ArrayList<Double> hamPercentages;
+    public TestFile[] spamPercentages;
     public int fileCounts;
-    public int hamCount;
-    public int spamCount;
+    public double hamCount;
+    public double spamCount;
     public int count;
 
     // Creates variable to count word frequency
@@ -22,18 +26,87 @@ public class WordCounter{
         allWords = new TreeMap<>();
         wordCountsSpam = new TreeMap<>();
         fileCounts = 0; // Used to store the count of all files
-        hamCount = 0; // Used to store the count of ham files
-        spamCount = 0; // used to store the count of spam files
+        hamCount = 0.0; // Used to store the count of ham files
+        spamCount = 0.0; // used to store the count of spam files
         count = 0;
+        totalPercentages = new ArrayList<TestFile>(5000);
+        hamPercentages = new ArrayList<Double>(5000);
+        spamPercentages = new TestFile[5000];
     }
 
     public int getFileCounts() { return fileCounts; }
-    public int getHamCount() { return hamCount; }
-    public int getSpamCount() { return spamCount; }
-    public Map<String, Integer> getWordCountsHam() { return wordCountsHam; }
-    public Map<String, Integer> getWordCountsSpam() { return wordCountsSpam; }
+    public double getHamCount() { return hamCount; }
+    public double getSpamCount() { return spamCount; }
+    public Map<String, Double> getWordCountsHam() { return wordCountsHam; }
+    public Map<String, Double> getWordCountsSpam() { return wordCountsSpam; }
     public Map<String, Boolean> getWordsAppeared() { return wordsAppeared; }
     public Map<Integer, String> getAllWords() { return allWords; }
+
+    public void parseTestFile(File test) throws FileNotFoundException {
+        System.out.println("Starting parsing of the file:" + test.getAbsolutePath());
+
+        if(test.isDirectory()){
+            //parse each file inside the directory
+            File[] content = test.listFiles();
+            for (File current: content){
+                parseTestFile(current);
+            }
+        }else{
+            Scanner scanner = new Scanner(test);
+            //Scans token by token
+            if (test.getParentFile().getName().equals("spam")){
+                //System.out.println(file.getName());
+                double total = 0.0;
+                while (scanner.hasNext()) {
+                    String token = scanner.next();
+                    if (isValidWord(token)) {
+                        total += calculatePercentage(token);
+                    }
+                    wordsAppeared = new TreeMap<>();
+                }
+                double spamChance = 1/(1+Math.pow(Math.E, total));
+                //System.out.println(spamChance);
+                totalPercentages.add(new TestFile(test.getName(), total, test.getParentFile().getName()));
+            }
+            else if (test.getParentFile().getName().equals("ham") || test.getParentFile().getName().equals("ham2")){
+                //System.out.println(file.getName());
+                double total = 0.0;
+                while (scanner.hasNext()) {
+                    String token = scanner.next();
+                    if (isValidWord(token)) {
+                        total += calculatePercentage(token);
+                    }
+                    wordsAppeared = new TreeMap<>();
+                }
+                double spamChance = 1/(1+Math.pow(Math.E, total));
+                System.out.println(spamChance);
+                totalPercentages.add(new TestFile(test.getName(), total, test.getParentFile().getName()));
+            }
+        }
+    }
+
+    public double calculatePercentage(String word){
+        double hamPercent = 0.00000;
+        double spamPercent = 0.00000;
+        DecimalFormat df = new DecimalFormat("#0.00000");
+        if (wordCountsHam.containsKey(word)){
+            hamPercent = wordCountsHam.get(word)/hamCount;
+        } else {
+            System.out.println("Ham is null");
+            hamPercent = 1/hamCount;
+        }
+        if (wordCountsSpam.containsKey(word)){
+            spamPercent = wordCountsSpam.get(word)/spamCount;
+        }
+        else {
+            System.out.println("Spam is null");
+            spamPercent = 1/spamCount;
+        }
+        double spamEquation = spamPercent/(spamPercent + hamPercent);
+        System.out.println(wordCountsSpam.get(word) + " " + spamPercent);
+        System.out.println(wordCountsHam.get(word) + " " + hamPercent);
+        return Math.log(1-spamEquation)-Math.log(spamEquation);
+    }
 
     public void parseFile(File file) throws IOException{
         System.out.println("Starting parsing of the file:" + file.getAbsolutePath());
@@ -48,38 +121,27 @@ public class WordCounter{
             Scanner scanner = new Scanner(file);
             //Scans token by token
             if (file.getParentFile().getName().equals("spam")){
-                System.out.println(file.getName());
-                if (file.getName().equals("cmds")){
-                }
-                else {
-                    spamCount++;
-                    while (scanner.hasNext()) {
-                        String token = scanner.next();
-                        if (isValidWord(token)) {
-                            countWordHam(token);
-                        }
+                //System.out.println(file.getName());
+                spamCount++;
+                while (scanner.hasNext()) {
+                    String token = scanner.next();
+                    if (isValidWord(token)) {
+                        countWordSpam(token);
                     }
                 }
             }
             else if (file.getParentFile().getName().equals("ham") || file.getParentFile().getName().equals("ham2")){
-                System.out.println(file.getName());
-                if (file.getName().equals("cmds")){
-                }
-                else {
-                    hamCount++;
-                    while (scanner.hasNext()) {
-                        String token = scanner.next();
-                        if (isValidWord(token)) {
-                            countWordSpam(token);
-                        }
+                //System.out.println(file.getName());
+
+                hamCount++;
+                while (scanner.hasNext()) {
+                    String token = scanner.next();
+                    if (isValidWord(token)) {
+                        countWordHam(token);
                     }
                 }
             }
-            if (file.getName().equals("cmds")){
-            }
-            else{
-                fileCounts++;
-            }
+            fileCounts++;
             wordsAppeared = new TreeMap<>();
         }
     }
@@ -98,10 +160,10 @@ public class WordCounter{
     // Counts the frequency of the word, either adding to the current amount or creating a new entry
     private void countWordHam(String word){
         if (wordCountsHam.containsKey(word)){
-            int previous = wordCountsHam.get(word);
+            double previous = wordCountsHam.get(word);
             wordCountsHam.put(word, previous+1);
         } else {
-            wordCountsHam.put(word,1);
+            wordCountsHam.put(word,1.0);
             allWords.put(count, word);
             count++;
         }
@@ -109,10 +171,10 @@ public class WordCounter{
 
     private void countWordSpam(String word){
         if (wordCountsSpam.containsKey(word)){
-            int previous = wordCountsSpam.get(word);
+            double previous = wordCountsSpam.get(word);
             wordCountsSpam.put(word, previous+1);
         } else {
-            wordCountsSpam.put(word,1);
+            wordCountsSpam.put(word,1.0);
             allWords.put(count, word);
             count++;
         }
@@ -132,7 +194,7 @@ public class WordCounter{
 
                 while (keyIterator.hasNext()) {
                     String key = keyIterator.next();
-                    int count = wordCountsHam.get(key);
+                    double count = wordCountsHam.get(key);
                     if (count >= minCount) {
                         fileOutput.println(key + ": " + count);
                     }
