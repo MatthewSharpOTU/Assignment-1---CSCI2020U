@@ -18,7 +18,7 @@ public class Main extends Application{
     public void start(Stage primaryStage) throws Exception{
         // Prints a JavaFX Stage
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Email Checker 420");
+        primaryStage.setTitle("Spam Master 3000");
         primaryStage.setScene(new Scene(root, 500, 350));
         primaryStage.show();
     }

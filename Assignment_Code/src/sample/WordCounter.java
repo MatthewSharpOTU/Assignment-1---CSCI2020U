@@ -1,7 +1,6 @@
 package sample;
 
 import java.io.*;
-import java.text.DecimalFormat;
 import java.util.*;
 
 // WordCounter Class will count all words in a file - based off of lecture code
@@ -27,8 +26,8 @@ public class WordCounter{
         wordCountsSpam = new TreeMap<>();
         fileCounts = 0.0; // Used to store the count of all files
         hamCount = 0.0; // Used to store the count of ham files
-        spamCount = 0.0; // used to store the count of spam files
-        count = 0;
+        spamCount = 0.0; // Used to store the count of spam files
+        count = 0; // Used to store the count of files in the test directory
         totalPercentages = new ArrayList<TestFile>(5000);
         hamPercentages = new ArrayList<Double>(5000);
         spamPercentages = new TestFile[5000];
@@ -44,8 +43,6 @@ public class WordCounter{
     public ArrayList<TestFile> getTotalPercentages() { return totalPercentages; }
 
     public void parseTestFile(File test) throws FileNotFoundException {
-        System.out.println("Starting parsing of the file:" + test.getAbsolutePath());
-
         if(test.isDirectory()){
             //parse each file inside the directory
             File[] content = test.listFiles();
@@ -55,8 +52,8 @@ public class WordCounter{
         }else{
             Scanner scanner = new Scanner(test);
             //Scans token by token
+            double total = 0.0;
             if (test.getParentFile().getName().equals("spam")){
-                double total = 0.0;
                 while (scanner.hasNext()) {
                     String token = scanner.next();
                     if (isValidWord(token)) {
@@ -68,7 +65,6 @@ public class WordCounter{
                 totalPercentages.add(new TestFile(test.getName(), spamChance, test.getParentFile().getName()));
             }
             else if (test.getParentFile().getName().equals("ham") || test.getParentFile().getName().equals("ham2")){
-                double total = 0.0;
                 while (scanner.hasNext()) {
                     String token = scanner.next();
                     if (isValidWord(token)) {
@@ -101,9 +97,7 @@ public class WordCounter{
         return Math.log(1-spamEquation)-Math.log(spamEquation);
     }
 
-    public void parseFile(File file) throws IOException{
-        System.out.println("Starting parsing of the file:" + file.getAbsolutePath());
-
+    public void parseFile(File file) throws FileNotFoundException{
         if(file.isDirectory()){
             //parse each file inside the directory
             File[] content = file.listFiles();
@@ -114,7 +108,6 @@ public class WordCounter{
             Scanner scanner = new Scanner(file);
             //Scans token by token
             if (file.getParentFile().getName().equals("spam")){
-                //System.out.println(file.getName());
                 spamCount++;
                 while (scanner.hasNext()) {
                     String token = scanner.next();
@@ -124,8 +117,6 @@ public class WordCounter{
                 }
             }
             else if (file.getParentFile().getName().equals("ham") || file.getParentFile().getName().equals("ham2")){
-                //System.out.println(file.getName());
-
                 hamCount++;
                 while (scanner.hasNext()) {
                     String token = scanner.next();
@@ -170,34 +161,5 @@ public class WordCounter{
             allWords.put(count, word);
             count++;
         }
-    }
-
-    // Function which outputs all the wordCounts entries into a file
-    public void outputWordCount(int minCount, File output) throws IOException {
-        System.out.println("Saving word counts to file:" + output.getAbsolutePath());
-        System.out.println("Total Words: " + wordCountsHam.keySet().size());
-        if (!output.exists()) {
-            output.createNewFile();
-            if (output.canWrite()) {
-                PrintWriter fileOutput = new PrintWriter(output);
-
-                Set<String> keys = wordCountsHam.keySet();
-                Iterator<String> keyIterator = keys.iterator();
-
-                while (keyIterator.hasNext()) {
-                    String key = keyIterator.next();
-                    double count = wordCountsHam.get(key);
-                    if (count >= minCount) {
-                        fileOutput.println(key + ": " + count);
-                    }
-                }
-
-                fileOutput.close();
-            }
-        } else {
-            System.out.println("Error: the output file found already exists: " + output.getAbsolutePath());
-
-        }
-
     }
 }

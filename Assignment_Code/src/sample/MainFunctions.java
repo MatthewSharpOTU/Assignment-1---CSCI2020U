@@ -46,11 +46,8 @@ public class MainFunctions {
         try{
             trainCounter.parseFile(trainDirectory); // Parses through train directory files
             trainCounter.parseTestFile(mainDirectory);
-            trainCounter.outputWordCount(1, new File("output.txt")); // Outputs all single words into a txt file
-        }catch(FileNotFoundException e){
+        }catch(FileNotFoundException e) {
             System.err.println("Invalid input dir: " + mainDirectory.getAbsolutePath()); // catch block if error for incorrect input director
-            e.printStackTrace();
-        }catch(IOException e){ // catch block for output file already existing
             e.printStackTrace();
         }
         return true;
@@ -61,9 +58,26 @@ public class MainFunctions {
         return true;
     }
 
+    public static class finalPercentages{
+        private String filename;
+        private String spamProbability;
+        private String actualClass;
+
+        public finalPercentages(String f, String p, String c){
+            filename = f;
+            spamProbability = p;
+            actualClass = c;
+        }
+
+        public String getActualClass() { return actualClass; }
+        public String getSpamProbability() { return spamProbability; }
+        public String getFilename() { return filename; }
+    }
+
     // method used for displaying data
     public static void displayData(Stage primaryStage){
         ArrayList<TestFile> testPercentages = trainCounter.getTotalPercentages();
+        ArrayList<finalPercentages> tablePercentages = new ArrayList<finalPercentages>(testPercentages.size());
         double truePositives = 0.0;
         double trueNegatives = 0.0;
         double falsePositives = 0.0;
@@ -77,9 +91,8 @@ public class MainFunctions {
             else if (file.getActualClass().equals("spam") && file.getSpamProbability() > 0.5){
                 truePositives++;
             }
-            //System.out.println(file.getFilename() + file.getActualClass() + file.getSpamProbRounded());
+            tablePercentages.add(new finalPercentages(file.getFilename(), file.getSpamProbRounded(),file.getActualClass()));
         }
-        System.out.println(trueNegatives + " " + truePositives + " " + falsePositives);
         double accuracy = (truePositives+trueNegatives)/trainCounter.getFileCounts();
         double precision = truePositives/(falsePositives+truePositives);
         DecimalFormat df = new DecimalFormat("0.00000");
@@ -87,7 +100,7 @@ public class MainFunctions {
         // initialize new data table
         BorderPane mainPane = new BorderPane();
         ScrollPane scrollPane = new ScrollPane();
-        TableView<DataRow> table = new TableView<DataRow>();
+        TableView<finalPercentages> table = new TableView<finalPercentages>();
         GridPane calculatedData = new GridPane();
         Label accuracyText = new Label("Accuracy: ");
         Label precisionText = new Label("Precision: ");
@@ -101,33 +114,19 @@ public class MainFunctions {
         calculatedData.add(accuracyData, 1, 0);
         calculatedData.add(precisionText, 0, 1);
         calculatedData.add(precisionData, 1, 1);
-        File outputFile = new File("output.txt");
-        try {
-            Scanner fileReader = new Scanner(outputFile);
-            //setting up rows
-            ObservableList<DataRow> allData = FXCollections.observableArrayList();
-            while (fileReader.hasNextLine()) {
-                String[] rowData = fileReader.nextLine().split(":");
-                DataRow data = new DataRow();
-                if (rowData[0]!=null){data.setFile(rowData[0]);}
-                if (rowData[1]!=null){data.setActualClass(rowData[1]);}
-                if (rowData.length>2){data.setProbability(Double.parseDouble(rowData[2]));}
-                allData.add(data);
-            }
-            table.setItems(allData);
 
-            //setting up columns
-            TableColumn<DataRow, String> fileColumn = new TableColumn<DataRow, String>("File");
-            fileColumn.setCellValueFactory(new PropertyValueFactory("file"));
-            TableColumn<DataRow, String> actualClassColumn = new TableColumn<DataRow, String>("Actual Class");
-            actualClassColumn.setCellValueFactory(new PropertyValueFactory("actualClass"));
-            TableColumn<DataRow, String> probabilityColumn = new TableColumn<DataRow, String>("Spam Probability");
-            probabilityColumn.setCellValueFactory(new PropertyValueFactory("probability"));
-            table.getColumns().addAll(fileColumn, actualClassColumn, probabilityColumn);
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
+        //File outputFile = new File("output.txt");
+        ObservableList<finalPercentages> data = FXCollections.observableArrayList(tablePercentages);
+        table.setItems(data);
+
+        //setting up columns
+        TableColumn<finalPercentages, String> fileColumn = new TableColumn<finalPercentages, String>("File");
+        fileColumn.setCellValueFactory(new PropertyValueFactory("filename"));
+        TableColumn<finalPercentages, String> actualClassColumn = new TableColumn<finalPercentages, String>("Actual Class");
+        actualClassColumn.setCellValueFactory(new PropertyValueFactory("actualClass"));
+        TableColumn<finalPercentages, String> probabilityColumn = new TableColumn<finalPercentages, String>("Spam Probability");
+        probabilityColumn.setCellValueFactory(new PropertyValueFactory("spamProbability"));
+        table.getColumns().addAll(fileColumn, actualClassColumn, probabilityColumn);
 
         mainPane.setCenter(table);
         mainPane.setBottom(calculatedData);

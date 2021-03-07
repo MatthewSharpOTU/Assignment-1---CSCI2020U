@@ -12,7 +12,7 @@
           textAlignment="CENTER" />
 
     <!--Prompt for user directory input-->
-    <Label text ="Training data directory: "
+    <Label text ="Testing data directory: "
            GridPane.columnIndex="0" GridPane.rowIndex="1" textAlignment="LEFT"/>
     <Button text = "Select Directory"
             GridPane.columnIndex="1" GridPane.rowIndex="1"
