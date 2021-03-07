@@ -10,6 +10,13 @@ import javafx.stage.Stage;
 public class Controller {
     @FXML
     public Text actionDisplay;
+
+    /**
+     * Process' table layout if the parsing of the directory in the
+     * processFiles function process' the files properly
+     *
+     * @param actionEvent - the input/selection of a directory
+     */
     public void returnInputDirectory(ActionEvent actionEvent) {
         Stage mainWindow = (Stage) actionDisplay.getScene().getWindow();
         boolean success = MainFunctions.processFiles(mainWindow);
