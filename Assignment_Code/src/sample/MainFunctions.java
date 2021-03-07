@@ -154,25 +154,4 @@ public class MainFunctions {
         // Display new data table
         primaryStage.show();
     }
-
-    /*
-     Not sure if this is needed anymore but kept it just incase
-    public static class DataRow{
-        private StringProperty file = new SimpleStringProperty();
-        private StringProperty actualClass = new SimpleStringProperty();
-        private DoubleProperty probability = new SimpleDoubleProperty();
-
-        public final String getFile(){return file.get();}
-        public final void setFile(String value){file.set(value);}
-        public StringProperty fileProperty(){return file;}
-
-        public final String getActualClass(){return actualClass.get();}
-        public final void setActualClass(String value){actualClass.set(value);}
-        public StringProperty actualClassProperty(){return actualClass;}
-
-        public final Double getProbability(){return probability.get();}
-        public final void setProbability(double value){probability.set(value);}
-        public DoubleProperty probabilityProperty(){return probability;}
-    }
-     */
 }
