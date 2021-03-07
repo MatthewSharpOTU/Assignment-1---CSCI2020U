@@ -68,13 +68,13 @@ public class MainFunctions {
         double trueNegatives = 0.0;
         double falsePositives = 0.0;
         for (TestFile file: testPercentages){
-            if (file.getActualClass().equals("ham") && file.getSpamProbRounded().equals("0.00000")){
+            if (file.getActualClass().equals("ham") && file.getSpamProbability() < 0.5){
                 trueNegatives++;
             }
-            else if (file.getActualClass().equals("ham") && !file.getSpamProbRounded().equals("0.00000")){
+            else if (file.getActualClass().equals("ham") && file.getSpamProbability() > 0.5){
                 falsePositives++;
             }
-            else if (file.getActualClass().equals("spam") && !file.getSpamProbRounded().equals("0.00000")){
+            else if (file.getActualClass().equals("spam") && file.getSpamProbability() > 0.5){
                 truePositives++;
             }
             //System.out.println(file.getFilename() + file.getActualClass() + file.getSpamProbRounded());
