@@ -9,8 +9,9 @@ The program will be able to determine whether an email is detected as a spam mes
 ![Alt text](/OutputData.png)
 
 Improvements:
-- UI: Able to select a directory of test code.
-- Model: Rather than saving a word to a ham or spam map. Instead the frequency of valid words (which are words extracted from sentences that only comprises upper case and lower case letters) in a file are stored by a custom class that holds the String to the directory of the file. The valid words are used to calculate the percent whether it is a ham or a spam and it seems to be more accurate.
+- UI: Able to select a directory of data for training and testing.
+- Model: rather than storing word's respective probability in a spam and ham map. The frequencies of valid words (comprising of upper and lower case letters only) to be in ham or spam respective to a string of the file directories.
+- Model: When calculating the chances of a test file being a spam. The program loops through the training spam files to compare and calculate with each one. The final sum of the probability determines if it's a spam or not.
 
 Instructions:
 - Using Intellij to run program:
@@ -32,5 +33,6 @@ Instructions:
 - the window to the email checker should open.
 
 References:
-[1] ​https://en.wikipedia.org/wiki/Bag-of-words_model
-[2] ​https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering
+- ​https://en.wikipedia.org/wiki/Bag-of-words_model
+- ​https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering
+- https://www.youtube.com/watch?v=O2L2Uv9pdDA
