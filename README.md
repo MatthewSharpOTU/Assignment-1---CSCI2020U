@@ -36,3 +36,6 @@ References:
 - ​https://en.wikipedia.org/wiki/Bag-of-words_model
 - ​https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering
 - https://www.youtube.com/watch?v=O2L2Uv9pdDA
+
+GitHub Repository:
+- https://github.com/MatthewSharpOTU/Assignment-1---CSCI2020U.git
